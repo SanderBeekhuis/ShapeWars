@@ -1,118 +1,119 @@
 $("document").ready(function() {
-  var player = {"x": 100, "y":100};
-  var mouse = {"x": 100, "y":100};
-  var keys = {"w": false, "a": false, "s": false, "d": false};
-  var firing = false;
-  var reload = 0;
-  var bullets = [];
-  var bulletspeed = 20;
+  SW = {}; //Namespace
 
-  var canvas = document.getElementById("canvas");
-  var context = canvas.getContext("2d");
-  var movespeed = 5;
+  SW.player = {"x": 100, "y":100, "reload":0};
+  SW.mouse = {"x": 100, "y":100, "down":false};
+  SW.keys = {"w": false, "a": false, "s": false, "d": false};
+  SW.reload = 0;
 
-  var step = function(){
+  SW.bullets = [];
+  SW.bulletspeed = 20;
+
+  SW.canvas = document.getElementById("canvas");
+  SW.context = canvas.getContext("2d");
+  SW.movespeed= 5;
+
+  SW.step = function(){
     var bullet, i;
     //update
-    if (keys.w){
-      player.y -= movespeed;
+    if (SW.keys.w){
+      SW.player.y -= SW.movespeed;
     }
-    if(keys.s){
-      player.y += movespeed;
+    if(SW.keys.s){
+      SW.player.y += SW.movespeed;
     }
-    if (keys.a) {
-      player.x -= movespeed;
+    if (SW.keys.a) {
+      SW.player.x -= SW.movespeed;
     }
-    if (keys.d){
-      player.x += movespeed;
+    if (SW.keys.d){
+      SW.player.x += SW.movespeed;
     }
 
-    //TODO player inside bounding box?
+    //TODO keep player inside bounding box? or scrolling map
+
     //firing
-    reload -= 1;
-    if (firing && reload<=0) {
-      reload = 5;
-      fire();
+    SW.player.reload -= 1;
+    if (SW.mouse.down && SW.player.reload<=0) {
+      SW.player.reload = 5;
+      SW.fire();
     }
 
     //update bullet
-    for(i=0; i<bullets.length; i++) {
-      bullet = bullets[i];
-      bullet.x += bullet.dx*bulletspeed;
-      bullet.y += bullet.dy*bulletspeed;
+    for(i=0; i<SW.bullets.length; i++) {
+      bullet = SW.bullets[i];
+      bullet.x += bullet.dx*SW.bulletspeed;
+      bullet.y += bullet.dy*SW.bulletspeed;
     }
 
     //draw
     //background
-    context.clearRect(0,0,1600,1000);
+    SW.context.clearRect(0,0,1600,1000);
 
     //player
-    context.beginPath();
-    context.arc(player.x , player.y ,50, 0, 2*Math.PI );
-    context.fill();
+    SW.context.beginPath();
+    SW.context.arc(SW.player.x , SW.player.y ,50, 0, 2*Math.PI );
+    SW.context.fill();
 
     //bullets
-    for(i=0; i<bullets.length; i++) {
-      bullet = bullets[i];
-      context.beginPath();
-      context.arc(bullet.x , bullet.y , 10, 0, 2*Math.PI );
-      context.fill();
+    for(i=0; i<SW.bullets.length; i++) {
+      bullet = SW.bullets[i];
+      SW.context.beginPath();
+      SW.context.arc(bullet.x , bullet.y , 10, 0, 2*Math.PI );
+      SW.context.fill();
     }
   };
 
-  var fire = function(){
-    var dx = mouse.x-player.x;
-    var dy = mouse.y-player.y;
+  SW.fire = function(){
+    var dx = SW.mouse.x-SW.player.x;
+    var dy = SW.mouse.y-SW.player.y;
     var radius = Math.sqrt(dx*dx+dy*dy);
-    var bullet = {"x": player.x, "y": player.y, "dx": dx/radius, "dy": dy/radius};
-    bullets.push(bullet);
+    var bullet = {"x": SW.player.x, "y": SW.player.y, "dx": dx/radius, "dy": dy/radius};
+    SW.bullets.push(bullet);
   };
 
-  setInterval(step, 1000/60); //60 fps
+  setInterval(SW.step, 1000/60); //60 fps
 
-  document.onmousemove = function(evt){
-    mouse.x = evt.pageX;
-    mouse.y = evt.pageY;
-  };
+  $(document).on("mousemove", function(evt){
+    SW.mouse.x = evt.pageX;
+    SW.mouse.y = evt.pageY;
+  });
 
   $(document).on("keydown", function(evt){
     switch (evt.keyCode){
       case 87:
-        keys.w=true;
+        SW.keys.w=true;
         return;
       case 65:
-        keys.a=true;
+        SW.keys.a=true;
         return;
       case 83:
-        keys.s=true;
+        SW.keys.s=true;
         return;
       case 68:
-        keys.d=true;
+        SW.keys.d=true;
       }
     });
 
   $(document).on("keyup", function(evt){
     switch (evt.keyCode){
       case 87:
-        keys.w=false;
+        SW.keys.w=false;
         return;
       case 65:
-        keys.a=false;
+        SW.keys.a=false;
         return;
       case 83:
-        keys.s=false;
+        SW.keys.s=false;
         return;
       case 68:
-        keys.d=false;
+        SW.keys.d=false;
       }
     });
 
   $(document).on("mousedown", function(evt){
-    firing = true;
+    SW.mouse.down = true;
     });
   $(document).on("mouseup", function(evt){
-    firing = false;
-    });
-
-
+    SW.mouse.down = false;
+  });
 });
