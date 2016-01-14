@@ -47,12 +47,15 @@ $("document").ready(function() {
 
     //draw
     //background
-    SW.context.clearRect(0,0,1600,1000);
+    var img=document.getElementById("background");
+    SW.context.drawImage(img,0,0);
 
     //player
     SW.context.beginPath();
     SW.context.arc(SW.player.x , SW.player.y ,50, 0, 2*Math.PI );
     SW.context.fill();
+
+
 
     //bullets
     for(i=0; i<SW.bullets.length; i++) {
