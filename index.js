@@ -21,6 +21,8 @@ $("document").ready(function() {
   SW.enemySpawnTime = 100;
   SW.enemySpeed = 6;
 
+  SW.score = 0;
+
   SW.canvas = document.getElementById("canvas");
   SW.canvas.width = 1000;
   SW.canvas.height = 600;
@@ -116,6 +118,15 @@ $("document").ready(function() {
     SW.context.rect(20,20, SW.player.hp * 20,20);
     SW.context.fill();
 
+    SW.context.fillStyle = "white";
+    SW.context.font="14px arial";
+    SW.context.fillText(SW.player.hp + "/" + SW.player.maxhp,50,35);
+
+
+    //score
+    SW.context.font="20px arial";
+    SW.context.fillText(SW.score,300,35);
+
 
 
 
@@ -142,6 +153,7 @@ $("document").ready(function() {
             SW.enemies[i].hp -= 1;
             removeBullets.push(j); // bullet is removed
             if(SW.enemies[i].hp<=0){ // enemy is dead
+              SW.score ++;
               removeEnemies.push(i); // enemy is removed
               break; // don't need to check for other bullets
             }
