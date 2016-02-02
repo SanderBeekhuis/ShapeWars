@@ -5,17 +5,17 @@ $("document").ready(function() {
   //TODO remove bullets out of screen from list
   //TODO player size is set to 0 when dead, change this
   //TODO player hp in screen
-  
+
   SW = {}; //Namespace
 
-  SW.player = {"x": 100, "y":100, "reload":0, "hp":10, "size":40};
+  SW.player = {"x": 100, "y":100, "reload":0, "hp":10, "maxhp":10, "size":40};
   SW.mouse = {"x": 100, "y":100, "down":false};
   SW.keys = {"w": false, "a": false, "s": false, "d": false};
   SW.reloadTime = 10;
 
   SW.bullets = [];
   SW.bulletspeed = 5;
-  
+
   SW.enemies = []
   SW.enemySpawnCounter = 0;
   SW.enemySpawnTime = 100;
@@ -24,16 +24,16 @@ $("document").ready(function() {
   SW.canvas = document.getElementById("canvas");
   SW.canvas.width = 1000;
   SW.canvas.height = 600;
-  
+
   SW.context = canvas.getContext("2d");
   SW.movespeed= 5;
 
   SW.step = function(){
     var bullet, i, enemy;
-    
+
     //collision detection
     SW.collisionDetect();
-    
+
     //update
     if (SW.keys.w){
       SW.player.y -= SW.movespeed;
@@ -54,7 +54,7 @@ $("document").ready(function() {
       SW.player.reload = SW.reloadTime;
       SW.fire();
     }
-    
+
     //spawn enemy
     SW.enemySpawnCounter -= 1;
     if (SW.enemySpawnCounter<=0) {
@@ -68,13 +68,13 @@ $("document").ready(function() {
       bullet.x += bullet.dx*SW.bulletspeed;
       bullet.y += bullet.dy*SW.bulletspeed;
     }
-    
+
     //update enemies
     for(i=0; i<SW.enemies.length; i++) {
       enemy = SW.enemies[i];
       SW.moveEnemy(enemy);
     }
-    
+
     //draw
     //background
     var img=document.getElementById("background");
@@ -97,14 +97,31 @@ $("document").ready(function() {
       SW.context.arc(bullet.x, bullet.y, bullet.size, 0, 2*Math.PI);
       SW.context.fill();
     }
-    
+
     //player
     SW.context.fillStyle = "#34495e";
     SW.context.beginPath();
     SW.context.arc(SW.player.x, SW.player.y, SW.player.size, 0, 2*Math.PI);
     SW.context.fill();
+
+    //health container
+    SW.context.beginPath();
+    SW.context.fillStyle = "black";
+    SW.context.rect(20,20, SW.player.maxhp * 20,20);
+    SW.context.fill();
+
+    //health
+    SW.context.beginPath();
+    SW.context.fillStyle = "#c0392b";
+    SW.context.rect(20,20, SW.player.hp * 20,20);
+    SW.context.fill();
+
+
+
+
+
   }
-  
+
   SW.collisionDetect = function(){
     var i,j;
     var removeEnemies = [];
