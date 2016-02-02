@@ -14,6 +14,8 @@ $("document").ready(function() {
 
   SW.score = 0;
 
+  SW.score = 0;
+
   SW.canvas = document.getElementById("canvas");
   SW.context = canvas.getContext("2d");
   SW.movespeed= 5;
