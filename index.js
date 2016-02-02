@@ -163,8 +163,21 @@ $("document").ready(function() {
   }
 
   SW.spawnEnemy = function(){
-    var x = Math.random()*SW.canvas.width;
-    var y = Math.random()*SW.canvas.height;
+    var x = Math.random();
+    var y = Math.random();
+    if(x>0.75){ // right of the screen
+      x = SW.canvas.width+20;
+      y = y*SW.canvas.height;
+    } else if(x>0.5) { // left of the screen
+      x = -20;
+      y = y*SW.canvas.height;
+    } else if(x>0.25) { // top of the screen
+      x = y*SW.canvas.width;
+      y = -20;
+    } else { // bottom of the screen
+      x = y*SW.canvas.width;
+      y = SW.canvas.height+20;
+    }
     var enemy = {"x": x, "y": y, "hp": 5, "size": (Math.random()+1)*20};
     SW.enemies.push(enemy);
   };
