@@ -66,8 +66,6 @@ $("document").ready(function() {
       SW.context.arc(bullet.x , bullet.y , 10, 0, 2*Math.PI );
       SW.context.fill();
     }
-<<<<<<< HEAD
-=======
 
     //player
     SW.context.fillStyle = "#34495e";
@@ -178,7 +176,6 @@ $("document").ready(function() {
     }
     var enemy = {"x": x, "y": y, "hp": 5, "size": (Math.random()+1)*20};
     SW.enemies.push(enemy);
->>>>>>> origin/master
   };
 
   SW.fire = function(){
