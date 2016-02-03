@@ -16,7 +16,7 @@ $("document").ready(function() {
   SW.bullets = [];
   SW.bulletspeed = 5;
 
-  SW.enemies = []
+  SW.enemies = [];
   SW.enemySpawnCounter = 0;
   SW.enemySpawnTime = 100;
   SW.enemySpeed = 6;
@@ -126,12 +126,7 @@ $("document").ready(function() {
     //score
     SW.context.font="20px arial";
     SW.context.fillText(SW.score,300,35);
-
-
-
-
-
-  }
+  };
 
   SW.collisionDetect = function(){
     var i,j;
@@ -161,15 +156,15 @@ $("document").ready(function() {
         }
       }
     }
-    removeEnemies.sort(function(a, b){return b-a});
-    removeBullets.sort(function(a, b){return b-a});
+    removeEnemies.sort(function(a, b){return b-a;});
+    removeBullets.sort(function(a, b){return b-a;});
     for(i=0; i<removeEnemies.length; i++){
       SW.enemies.splice(removeEnemies[i],1);
     }
     for(i=0; i<removeBullets.length; i++){
       SW.bullets.splice(removeBullets[i],1);
     }
-  }
+  };
 
   SW.collides = function(object1, object2){
     var dx = object1.x-object2.x;
@@ -181,7 +176,7 @@ $("document").ready(function() {
     } else {
       return false;
     }
-  }
+  };
 
   SW.moveEnemy = function(enemy){
     var dx = SW.player.x-enemy.x;
@@ -189,7 +184,7 @@ $("document").ready(function() {
     var radius = Math.sqrt(dx*dx+dy*dy);
     enemy.x += dx/radius*SW.enemySpeed;
     enemy.y += dy/radius*SW.enemySpeed;
-  }
+  };
 
   SW.spawnEnemy = function(){
     var x = Math.random();
