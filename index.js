@@ -1,27 +1,41 @@
 $("document").ready(function() {
-  //Namespace
-  if (SW === undefined){
-    SW={};
-  }
+  //TODO keep player inside bounding box? or scrolling map
+  //TODO canvas size variable/dependent of screen size
+  //TODO player speed slower when moving diagonally
+  //TODO remove bullets out of screen from list
+  //TODO player size is set to 0 when dead, change this
+  //TODO player hp in screen
 
-  SW.player = {"x": 100, "y":100, "reload":0};
+  SW = {}; //Namespace
+
+  SW.player = {"x": 100, "y":100, "reload":0, "hp":10, "maxhp":10, "size":40};
   SW.mouse = {"x": 100, "y":100, "down":false};
   SW.keys = {"w": false, "a": false, "s": false, "d": false};
-  SW.reload = 0;
+  SW.reloadTime = 10;
 
   SW.bullets = [];
-  SW.bulletspeed = 20;
+  SW.bulletspeed = 5;
 
-  SW.score = 0;
+  SW.enemies = []
+  SW.enemySpawnCounter = 0;
+  SW.enemySpawnTime = 100;
+  SW.enemySpeed = 6;
 
   SW.score = 0;
 
   SW.canvas = document.getElementById("canvas");
+  SW.canvas.width = 1000;
+  SW.canvas.height = 600;
+
   SW.context = canvas.getContext("2d");
   SW.movespeed= 5;
 
   SW.step = function(){
-    var bullet, i;
+    var bullet, i, enemy;
+
+    //collision detection
+    SW.collisionDetect();
+
     //update
     if (SW.keys.w){
       SW.player.y -= SW.movespeed;
@@ -36,36 +50,53 @@ $("document").ready(function() {
       SW.player.x += SW.movespeed;
     }
 
-    //TODO keep player inside bounding box? or scrolling map
-
     //firing
     SW.player.reload -= 1;
     if (SW.mouse.down && SW.player.reload<=0) {
-      SW.player.reload = 5;
+      SW.player.reload = SW.reloadTime;
       SW.fire();
     }
 
-    //update bullet
+    //spawn enemy
+    SW.enemySpawnCounter -= 1;
+    if (SW.enemySpawnCounter<=0) {
+      SW.enemySpawnCounter = SW.enemySpawnTime;
+      SW.spawnEnemy();
+    }
+
+    //update bullets
     for(i=0; i<SW.bullets.length; i++) {
       bullet = SW.bullets[i];
       bullet.x += bullet.dx*SW.bulletspeed;
       bullet.y += bullet.dy*SW.bulletspeed;
     }
 
+    //update enemies
+    for(i=0; i<SW.enemies.length; i++) {
+      enemy = SW.enemies[i];
+      SW.moveEnemy(enemy);
+    }
+
     //draw
     //background
-    SW.context.clearRect(0,0,1600,1000);
+    var img=document.getElementById("background");
+    SW.context.drawImage(img, 0, 0);
 
-    //player
-    SW.context.beginPath();
-    SW.context.arc(SW.player.x , SW.player.y ,50, 0, 2*Math.PI );
-    SW.context.fill();
+    //enemies
+    for(i=0; i<SW.enemies.length; i++) {
+      enemy = SW.enemies[i];
+      SW.context.fillStyle = "#c0392b";
+      SW.context.beginPath();
+      SW.context.arc(enemy.x, enemy.y, enemy.size, 0, 2*Math.PI);
+      SW.context.fill();
+    }
 
     //bullets
     for(i=0; i<SW.bullets.length; i++) {
       bullet = SW.bullets[i];
+      SW.context.fillStyle = "#2c3e50";
       SW.context.beginPath();
-      SW.context.arc(bullet.x , bullet.y , 10, 0, 2*Math.PI );
+      SW.context.arc(bullet.x, bullet.y, bullet.size, 0, 2*Math.PI);
       SW.context.fill();
     }
 
@@ -184,7 +215,7 @@ $("document").ready(function() {
     var dx = SW.mouse.x-SW.player.x;
     var dy = SW.mouse.y-SW.player.y;
     var radius = Math.sqrt(dx*dx+dy*dy);
-    var bullet = {"x": SW.player.x, "y": SW.player.y, "dx": dx/radius, "dy": dy/radius};
+    var bullet = {"x": SW.player.x, "y": SW.player.y, "dx": dx/radius, "dy": dy/radius, "size": 5};
     SW.bullets.push(bullet);
   };
 
