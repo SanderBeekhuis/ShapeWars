@@ -126,11 +126,6 @@ $("document").ready(function() {
     //score
     SW.context.font="20px arial";
     SW.context.fillText(SW.score,300,35);
-
-
-
-
-
   }
 
   SW.collisionDetect = function(){
