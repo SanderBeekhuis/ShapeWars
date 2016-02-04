@@ -3,7 +3,7 @@ $("document").ready( function(){
   PU = {};
 
   PU.Powerup = function(x, y, img){
-    this.size= 50;
+    this.size= 35;
     this.x = x;
     this.y = y;
     this.img = img;
@@ -12,12 +12,12 @@ $("document").ready( function(){
 
   PU.Powerup.prototype.draw = function (context) {
     //bounding box
-    context.fillStyle = "green";
-    SW.context.beginPath();
-    SW.context.arc(this.x, this.y, this.size, 0, 2*Math.PI);
-    SW.context.fill();
+    // context.fillStyle = "green";
+    // SW.context.beginPath();
+    // SW.context.arc(this.x, this.y, this.size, 0, 2*Math.PI);
+    // SW.context.fill();
 
-    context.drawImage(this.img, this.x, this.y);
+    context.drawImage(this.img, this.x-this.img.width/2, this.y-this.img.height/2);
   };
 
 
