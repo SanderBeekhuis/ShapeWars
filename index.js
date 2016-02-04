@@ -240,9 +240,15 @@ $("document").ready(function() {
   };
 
   SW.spawnPowerup = function(){
+    var type = Math.floor(Math.random()*2);
     var x = Math.random()* SW.canvas.width;
     var y = Math.random()* SW.canvas.height;
-    var powerup = new PU.SpeedPowerup(x,y);
+    var powerup;
+    if (type === 0){
+      powerup = new PU.SpeedPowerup(x,y);
+    } else{
+      powerup = new PU.HealthPowerup(x,y);
+    }
     SW.powerups.push(powerup);
   };
 
