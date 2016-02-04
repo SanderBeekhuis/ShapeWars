@@ -21,6 +21,10 @@ $("document").ready(function() {
   SW.enemySpawnTime = 100;
   SW.enemySpeed = 6;
 
+  SW.powerups = [];
+  SW.powerupSpawnCounter = 0;
+  SW.powerupSpawnTime = 1000;
+
   SW.score = 0;
 
   SW.canvas = document.getElementById("canvas");
@@ -64,6 +68,13 @@ $("document").ready(function() {
       SW.spawnEnemy();
     }
 
+    //spawn PowerUp
+    SW.powerupSpawnCounter -= 1;
+    if (SW.powerupSpawnCounter<=0) {
+      SW.powerupSpawnCounter = SW.powerupSpawnTime;
+      SW.spawnPowerup();
+    }
+
     //update bullets
     for(i=0; i<SW.bullets.length; i++) {
       bullet = SW.bullets[i];
@@ -89,6 +100,11 @@ $("document").ready(function() {
       SW.context.beginPath();
       SW.context.arc(enemy.x, enemy.y, enemy.size, 0, 2*Math.PI);
       SW.context.fill();
+    }
+
+    //powerups
+    for(i=0; i<SW.powerups.length; i++) {
+      SW.powerups[i].draw(SW.context);
     }
 
     //bullets
@@ -132,6 +148,9 @@ $("document").ready(function() {
     var i,j;
     var removeEnemies = [];
     var removeBullets = [];
+    var removePowerups = [];
+
+    //loop over enemies
     for(i=0; i<SW.enemies.length; i++){
       // check player
       if(SW.collides(SW.enemies[i],SW.player)){
@@ -156,13 +175,28 @@ $("document").ready(function() {
         }
       }
     }
+
+    //loop over powerups
+    for(i=0; i<SW.powerups.length; i++){
+      if(SW.collides(SW.powerups[i], SW.player)){
+        SW.powerups[i].apply();
+        removePowerups.push(i);
+      }
+    }
+
+
     removeEnemies.sort(function(a, b){return b-a;});
     removeBullets.sort(function(a, b){return b-a;});
+    removePowerups.sort(function(a, b){return b-a;}); //I thinks this is standard sorting and we can remove the function ~Sander
+
     for(i=0; i<removeEnemies.length; i++){
       SW.enemies.splice(removeEnemies[i],1);
     }
     for(i=0; i<removeBullets.length; i++){
       SW.bullets.splice(removeBullets[i],1);
+    }
+    for(i=0; i<removePowerups.length; i++){
+      SW.powerups.splice(removeBullets[i],1);
     }
   };
 
@@ -171,7 +205,6 @@ $("document").ready(function() {
     var dy = object1.y-object2.y;
     var radius = Math.sqrt(dx*dx+dy*dy);
     if(radius<object1.size+object2.size) {
-      console.log("bots");
       return true;
     } else {
       return false;
@@ -205,6 +238,14 @@ $("document").ready(function() {
     var enemy = {"x": x, "y": y, "hp": 5, "size": (Math.random()+1)*20};
     SW.enemies.push(enemy);
   };
+
+  SW.spawnPowerup = function(){
+    var x = Math.random()* SW.canvas.width;
+    var y = Math.random()* SW.canvas.height;
+    var powerup = new PU.SpeedPowerup(x,y);
+    SW.powerups.push(powerup);
+  };
+
 
   SW.fire = function(){
     var dx = SW.mouse.x-SW.player.x;
